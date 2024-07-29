@@ -55,15 +55,16 @@ ZERO_V = Vector2(0,0)
 
 class Segment:
 
-    def __init__ (self, a : Vector2, b : Vector2, length : float, angle : float):
+    def __init__ (self, a : Vector2, length : float, angle : float):
         # angle in radians
         self.a = a 
-        self.b = b
         self.length = length
         self.angle = angle
+        # calculateB last since the previous arguments are required
+        self.b = self.calculateB()
 
     def draw(self, surface):
-        pygame.draw.line(surface, pygame.Color(255,255,255), (self.a.x, self.a.y), (self.b.x, self.b.y), width = 4)
+        pygame.draw.line(surface, pygame.Color(255,255,255), (self.a.x, self.a.y), (self.b.x, self.b.y), width = 1)
 
     def calculateB(self):
         fx = self.a.x + self.length * math.cos(self.angle)
@@ -81,14 +82,23 @@ class Segment:
 
 
 
+pieces = []
 
+previous = Segment(Vector2(400, 200), 50, 0)
+
+pieces.append(previous)
+while len(pieces) < 5:
+    pieces.append(Segment(previous.b, 50, 1.5))
+    previous = pieces[-1]
+
+
+print(len(pieces))
 
 
 
 def main():
     running = True
 
-    seg = Segment(Vector2(400, 200), Vector2(400,200), 50, 0)
     while running:
         screen.fill(pygame.Color(0,0,0))
 
@@ -96,9 +106,15 @@ def main():
 
         mouse_coords = Vector2(mx, my)
 
-        seg.update()
-        seg.follow(mouse_coords)
-        seg.draw(screen)
+        pieces[0].update()
+        pieces[0].follow(mouse_coords)
+        pieces[0].draw(screen)
+
+        for i in range(1, len(pieces)):
+            pieces[i].update()
+            pieces[i].follow(pieces[i - 1].a)
+            pieces[i].draw(screen)
+
         
 
         for event in pygame.event.get():
