@@ -82,22 +82,25 @@ class Segment:
 
 
 
-pieces = []
-
-previous = Segment(Vector2(400, 200), 50, 0)
-
-pieces.append(previous)
-while len(pieces) < 5:
-    pieces.append(Segment(previous.b, 50, 1.5))
-    previous = pieces[-1]
 
 
-print(len(pieces))
 
 
 
 def main():
     running = True
+    
+    no_of_pieces = int(input("Number of segments : "))
+    segment_length = float(input("Segment length : "))
+
+    pieces = []
+
+    previous = Segment(Vector2(400, 200), segment_length, 0)
+
+    pieces.append(previous)
+    while len(pieces) < no_of_pieces:
+        pieces.append(Segment(previous.b, segment_length, 1.5))
+        previous = pieces[-1]
 
     while running:
         screen.fill(pygame.Color(0,0,0))
